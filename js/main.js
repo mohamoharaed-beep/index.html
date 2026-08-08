@@ -54,7 +54,7 @@ function showNotification(message, type = 'success') {
     }, 4000);
 }
 
-// ===== STATS COUNTER (تم التحديث) =====
+// ===== STATS COUNTER =====
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-item .number');
     counters.forEach(counter => {
@@ -153,17 +153,17 @@ function addDarkModeButton() {
     document.body.appendChild(btn);
 }
 
-// ===== GOOGLE FORM SUBMISSION (مع رفع الملفات) =====
-// استبدل GOOGLE_FORM_URL برابط Google Form الخاص بك
-const GOOGLE_FORM_URL = 'https://docs.google.com/spreadsheets/d/1XLuRnGWdpGGNIjJQwJqpZZfiwSOwkEFLB4AzQqiudwE/edit?usp=sharing';
+// ===== GOOGLE FORM SUBMISSION (نسخة iframe) =====
+const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/formResponse';
+
 // الحد الأقصى لحجم الملف (5 ميجابايت)
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 // الحد الأقصى للطلبات في اليوم (2)
 const MAX_REQUESTS_PER_DAY = 2;
 
 function getTodayDate() {
-    return new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+    return new Date().toLocaleDateString('en-CA');
 }
 
 function getRequestCount() {
@@ -179,22 +179,13 @@ function incrementRequestCount() {
     localStorage.setItem('request_log', JSON.stringify(data));
 }
 
-function canSubmitRequest() {
-    return getRequestCount() < MAX_REQUESTS_PER_DAY;
-}
-
 function getRemainingRequests() {
     return MAX_REQUESTS_PER_DAY - getRequestCount();
 }
 
+// ===== دالة الإرسال إلى Google Forms (نسخة iframe) =====
 function submitToGoogleForm(event) {
     event.preventDefault();
-    
-    // التحقق من عدد الطلبات
-    if (!canSubmitRequest()) {
-        showNotification(`⛔ عذراً، لقد تجاوزت الحد الأقصى للطلبات (${MAX_REQUESTS_PER_DAY} طلبات يومياً). يرجى المحاولة غداً.`, 'error');
-        return;
-    }
     
     const name = document.getElementById('customerName').value.trim();
     const phone = document.getElementById('customerPhone').value.trim();
@@ -209,6 +200,12 @@ function submitToGoogleForm(event) {
     
     if (!/^[0-9]{10}$/.test(phone)) {
         showNotification('رقم الهاتف يجب أن يكون 10 أرقام', 'error');
+        return;
+    }
+    
+    // التحقق من عدد الطلبات
+    if (getRequestCount() >= MAX_REQUESTS_PER_DAY) {
+        showNotification(`⛔ عذراً، لقد تجاوزت الحد الأقصى للطلبات (${MAX_REQUESTS_PER_DAY} طلبات يومياً). يرجى المحاولة غداً.`, 'error');
         return;
     }
     
@@ -227,40 +224,62 @@ function submitToGoogleForm(event) {
     submitBtn.disabled = true;
     loading.style.display = 'block';
     
-    // إنشاء FormData لإرسال الملف
-    const formData = new FormData();
-    formData.append('entry.123456789', name);      // استبدل بـ entry ID من Google Form
-    formData.append('entry.987654321', phone);     // استبدل بـ entry ID من Google Form
-    formData.append('entry.111111111', service);   // استبدل بـ entry ID من Google Form
-    formData.append('entry.222222222', description); // استبدل بـ entry ID من Google Form
+    // إنشاء نموذج مخفي وإرساله عبر iframe
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = GOOGLE_FORM_URL;
+    form.target = 'hidden-iframe';
+    form.style.display = 'none';
     
-    if (fileInput && fileInput.files.length > 0) {
-        formData.append('file', fileInput.files[0]);
+    // أسماء الحقول (تأكد من تطابقها مع Google Forms)
+    const fields = {
+        'entry.123456789': name,
+        'entry.987654321': phone,
+        'entry.111111111': service,
+        'entry.222222222': description
+    };
+    
+    for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
     }
     
-    // إرسال إلى Google Form
-    fetch(GOOGLE_FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-    }).then(() => {
+    // إضافة iframe مخفي
+    const iframe = document.createElement('iframe');
+    iframe.name = 'hidden-iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    
+    // إرسال النموذج
+    form.submit();
+    
+    // عرض رسالة نجاح فورية
+    setTimeout(() => {
         // تسجيل الطلب
         incrementRequestCount();
         const remaining = getRemainingRequests();
         
         showNotification(`✅ تم استلام طلبك بنجاح! (تبقى ${remaining} طلب اليوم)`, 'success');
         document.getElementById('requestForm').reset();
+        if (fileInput) {
+            fileInput.value = '';
+            const fileNameEl = document.getElementById('fileName');
+            if (fileNameEl) fileNameEl.textContent = 'اضغط لاختيار ملف';
+        }
+        
+        // تنظيف العناصر المؤقتة
+        setTimeout(() => {
+            iframe.remove();
+            form.remove();
+        }, 2000);
+        
         submitBtn.disabled = false;
         loading.style.display = 'none';
-    }).catch(() => {
-        // حتى لو فشل، نعتبر الطلب تم (لأن no-cors لا يعيد استجابة)
-        incrementRequestCount();
-        const remaining = getRemainingRequests();
-        showNotification(`✅ تم استلام طلبك بنجاح! (تبقى ${remaining} طلب اليوم)`, 'success');
-        document.getElementById('requestForm').reset();
-        submitBtn.disabled = false;
-        loading.style.display = 'none';
-    });
+    }, 2000);
 }
 
 // ===== LOAD SERVICES FOR SELECT =====
@@ -275,26 +294,6 @@ function loadServicesSelect() {
         option.textContent = service.name;
         select.appendChild(option);
     });
-}
-
-// ===== ADMIN PANEL =====
-const ADMIN_PASSWORD = '123456'; // كلمة مرور لوحة الإدارة
-
-function checkAdminAuth() {
-    return localStorage.getItem('admin_logged_in') === 'true';
-}
-
-function adminLogin(password) {
-    if (password === ADMIN_PASSWORD) {
-        localStorage.setItem('admin_logged_in', 'true');
-        return true;
-    }
-    return false;
-}
-
-function adminLogout() {
-    localStorage.removeItem('admin_logged_in');
-    window.location.reload();
 }
 
 // ===== INIT =====
@@ -337,4 +336,23 @@ document.addEventListener('DOMContentLoaded', () => {
             popup.classList.remove('active');
         }
     });
+    
+    // تحديث عدد الطلبات المتبقية في صفحة الطلب
+    if (document.getElementById('remainingRequests')) {
+        updateRemainingRequestsDisplay();
+    }
 });
+
+// ===== عرض عدد الطلبات المتبقية =====
+function updateRemainingRequestsDisplay() {
+    const el = document.getElementById('remainingRequests');
+    if (el) {
+        const remaining = getRemainingRequests();
+        el.textContent = `تبقى لك ${remaining} طلب اليوم`;
+        if (remaining <= 0) {
+            el.style.color = '#DC3545';
+        } else {
+            el.style.color = 'var(--primary-dark)';
+        }
+    }
+}
