@@ -21,11 +21,53 @@
             padding: 40px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
+            transition: background 0.3s;
         }
         .admin-login h2 {
             text-align: center;
             color: var(--primary-dark);
             margin-bottom: 20px;
+        }
+        .admin-login .login-error {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+        .admin-login .login-error.show {
+            display: block;
+        }
+        .admin-login .login-locked {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+        .admin-login .login-locked.show {
+            display: block;
+        }
+        .admin-login .login-locked .countdown {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .admin-login .attempts-info {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: 10px;
+        }
+        .admin-login .attempts-info .attempts {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .admin-login .attempts-info .attempts.danger {
+            color: #DC2626;
         }
         .admin-panel {
             display: none;
@@ -62,6 +104,7 @@
             padding: 30px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
+            transition: background 0.3s;
         }
         .admin-content .tab-panel {
             display: none;
@@ -191,6 +234,7 @@
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
+            transition: background 0.3s;
         }
         .modal-close {
             position: absolute;
@@ -215,6 +259,7 @@
             color: var(--primary);
             font-weight: 600;
             text-decoration: none;
+            font-size: 1.1rem;
         }
         .google-forms-link a:hover {
             text-decoration: underline;
@@ -225,6 +270,18 @@
             padding: 12px 18px;
             border-radius: var(--radius-sm);
             margin-bottom: 15px;
+        }
+        .email-notice {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            margin-top: 10px;
+            font-size: 0.85rem;
+            display: none;
+        }
+        .email-notice.show {
+            display: block;
         }
         @media (max-width: 768px) {
             .admin-tabs {
@@ -287,12 +344,33 @@
         <div class="admin-login" id="adminLogin">
             <h2><i class="fas fa-user-shield" style="color:var(--primary);"></i> لوحة الإدارة</h2>
             <p style="text-align:center;color:var(--gray-600);margin-bottom:20px;">أدخل رمز الدخول</p>
+            
+            <div class="login-error" id="loginError">
+                <i class="fas fa-exclamation-circle"></i> رمز الدخول غير صحيح
+            </div>
+            
+            <div class="login-locked" id="loginLocked">
+                <i class="fas fa-lock"></i>
+                <p>تم قفل الدخول بسبب كثرة المحاولات الفاشلة.</p>
+                <p>يمكنك المحاولة مرة أخرى بعد: <span class="countdown" id="lockCountdown"></span></p>
+                <p style="font-size:0.8rem;margin-top:5px;">تم إرسال إشعار إلى البريد الإلكتروني.</p>
+            </div>
+            
             <div class="form-group">
                 <input type="password" id="adminPassword" class="form-control" placeholder="أدخل رمز الدخول" onkeyup="if(event.key==='Enter') adminLogin()">
             </div>
             <button onclick="adminLogin()" class="btn btn-success" style="width:100%;">
                 <i class="fas fa-sign-in-alt"></i> دخول
             </button>
+            
+            <div class="attempts-info">
+                عدد المحاولات الفاشلة: <span class="attempts" id="attemptsCount">0</span> من 3
+            </div>
+            
+            <div class="email-notice" id="emailNotice">
+                <i class="fas fa-envelope"></i> تم إرسال إشعار إلى البريد الإلكتروني
+            </div>
+            
             <p style="text-align:center;margin-top:10px;font-size:0.8rem;color:var(--gray-500);">
                 الرمز الافتراضي: 123456
             </p>
@@ -307,7 +385,6 @@
                 </button>
             </div>
             
-            <!-- Tabs -->
             <div class="admin-tabs">
                 <button class="active" onclick="switchAdminTab('services')"><i class="fas fa-list"></i> الخدمات</button>
                 <button onclick="switchAdminTab('phones')"><i class="fas fa-phone"></i> أرقام التواصل</button>
@@ -336,29 +413,32 @@
                     </div>
                 </div>
                 
-                <!-- ===== TAB: ORDERS ===== -->
-<div class="tab-panel" id="tab-orders">
-    <h3>📋 الطلبات</h3>
-    <div class="warning">
-        <i class="fas fa-info-circle"></i> 
-        يتم تخزين الطلبات في Google Forms. يمكنك عرضها وإدارتها من خلال الرابط أدناه.
+                <!-- Tab: Orders -->
+                <div class="tab-panel" id="tab-orders">
+                    <h3>📋 الطلبات</h3>
+                    <div class="warning">
+                        <i class="fas fa-info-circle"></i> 
+                        يتم تخزين الطلبات في Google Forms. يمكنك عرضها وإدارتها من خلال الرابط أدناه.
+                    </div>
+                    <div class="google-forms-link">
+                        <i class="fab fa-google" style="font-size:1.5rem;color:#EA4335;"></i>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/viewform?usp=sharing" target="_blank">
+                            📊 فتح طلبات Google Forms
+                        </a>
+                    </div>
+                    <div style="margin-top:20px;padding:15px;background:var(--primary-bg);border-radius:var(--radius-sm);">
+                        <p style="color:var(--gray-700);">
+                            <i class="fas fa-link" style="color:var(--primary);"></i> 
+                            <strong>رابط الطلبات المباشر:</strong><br>
+                            <span style="font-size:0.85rem;word-break:break-all;direction:ltr;display:inline-block;">
+                                https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/viewform?usp=sharing
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="google-forms-link">
-        <i class="fab fa-google" style="font-size:1.5rem;color:#EA4335;"></i>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/viewform?usp=sharing" target="_blank" style="font-size:1.1rem;">
-            📊 فتح طلبات Google Forms
-        </a>
-    </div>
-    <div style="margin-top:20px;padding:15px;background:var(--primary-bg);border-radius:var(--radius-sm);">
-        <p style="color:var(--gray-700);">
-            <i class="fas fa-link" style="color:var(--primary);"></i> 
-            <strong>رابط الطلبات المباشر:</strong><br>
-            <span style="font-size:0.85rem;word-break:break-all;direction:ltr;display:inline-block;">
-                https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/viewform?usp=sharing
-            </span>
-        </p>
-    </div>
-</div>
 </section>
 
 <!-- ===== MODAL: إضافة/تعديل خدمة ===== -->
@@ -451,15 +531,214 @@
 <script src="js/services-data.js"></script>
 <script src="js/main.js"></script>
 <script>
-// ===== ADMIN SCRIPTS =====
+// =============================================
+// ====== ADMIN SCRIPTS ======
+// =============================================
 
-// بيانات الأرقام الافتراضية (تخزن في localStorage)
+// ===== إعدادات الأمان =====
+const MAX_ATTEMPTS = 3;
+const LOCK_DURATION = 24 * 60 * 60 * 1000;
+const ADMIN_EMAIL = 'mohamoharaed@gmail.com';
+const ADMIN_PASSWORD = '123456';
+
+// ===== دوال إدارة المحاولات =====
+function getAttemptsData() {
+    const data = localStorage.getItem('admin_attempts');
+    if (data) {
+        return JSON.parse(data);
+    }
+    return { count: 0, lockUntil: null };
+}
+
+function saveAttemptsData(data) {
+    localStorage.setItem('admin_attempts', JSON.stringify(data));
+}
+
+function isLocked() {
+    const data = getAttemptsData();
+    if (data.lockUntil && Date.now() < data.lockUntil) {
+        return true;
+    }
+    if (data.lockUntil && Date.now() >= data.lockUntil) {
+        data.count = 0;
+        data.lockUntil = null;
+        saveAttemptsData(data);
+    }
+    return false;
+}
+
+function getRemainingLockTime() {
+    const data = getAttemptsData();
+    if (data.lockUntil) {
+        const remaining = data.lockUntil - Date.now();
+        if (remaining > 0) {
+            return remaining;
+        }
+    }
+    return 0;
+}
+
+function formatLockTime(ms) {
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+    return `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+}
+
+// ===== إرسال بريد إلكتروني (طريقة mailto) =====
+function sendAlertEmail() {
+    const subject = encodeURIComponent('🚨 تنبيه أمني - محاولات دخول فاشلة إلى لوحة الإدارة');
+    const body = encodeURIComponent(
+        `مرحباً,
+
+تم تسجيل ${MAX_ATTEMPTS} محاولات فاشلة للدخول إلى لوحة إدارة موقع "مركز حمزة للخدمات الإلكترونية".
+
+📅 التاريخ: ${new Date().toLocaleString('ar-JO')}
+🔒 تم قفل الدخول لمدة 24 ساعة.
+
+إذا كنت أنت من تحاول الدخول، يرجى استخدام الرمز الصحيح: ${ADMIN_PASSWORD}
+إذا لم تكن أنت، يرجى التحقق من أمان الموقع فوراً.
+
+مع تحيات,
+نظام أمان مركز حمزة`
+    );
+    
+    window.open(`mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`);
+    
+    document.getElementById('emailNotice').classList.add('show');
+    setTimeout(() => {
+        document.getElementById('emailNotice').classList.remove('show');
+    }, 10000);
+}
+
+// ===== دالة تسجيل الدخول =====
+function adminLogin() {
+    const password = document.getElementById('adminPassword').value;
+    const errorDiv = document.getElementById('loginError');
+    const lockedDiv = document.getElementById('loginLocked');
+    const attemptsSpan = document.getElementById('attemptsCount');
+    
+    if (isLocked()) {
+        const remaining = getRemainingLockTime();
+        if (remaining > 0) {
+            lockedDiv.classList.add('show');
+            document.getElementById('lockCountdown').textContent = formatLockTime(remaining);
+            if (!window.lockInterval) {
+                window.lockInterval = setInterval(updateLockCountdown, 1000);
+            }
+            return;
+        } else {
+            lockedDiv.classList.remove('show');
+            if (window.lockInterval) {
+                clearInterval(window.lockInterval);
+                window.lockInterval = null;
+            }
+        }
+    }
+    
+    if (password === ADMIN_PASSWORD) {
+        const data = getAttemptsData();
+        data.count = 0;
+        data.lockUntil = null;
+        saveAttemptsData(data);
+        attemptsSpan.textContent = '0';
+        attemptsSpan.className = 'attempts';
+        errorDiv.classList.remove('show');
+        lockedDiv.classList.remove('show');
+        
+        localStorage.setItem('admin_logged_in', 'true');
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminPanel').classList.add('active');
+        loadServicesForAdmin();
+        loadPhonesForAdmin();
+        showNotification('✅ مرحباً بك في لوحة الإدارة', 'success');
+    } else {
+        const data = getAttemptsData();
+        data.count += 1;
+        
+        if (data.count >= MAX_ATTEMPTS) {
+            data.lockUntil = Date.now() + LOCK_DURATION;
+            saveAttemptsData(data);
+            
+            lockedDiv.classList.add('show');
+            document.getElementById('lockCountdown').textContent = formatLockTime(LOCK_DURATION);
+            
+            if (window.lockInterval) {
+                clearInterval(window.lockInterval);
+            }
+            window.lockInterval = setInterval(updateLockCountdown, 1000);
+            
+            sendAlertEmail();
+            errorDiv.classList.remove('show');
+            showNotification('⛔ تم قفل الدخول لمدة 24 ساعة بسبب كثرة المحاولات', 'error');
+        } else {
+            saveAttemptsData(data);
+            attemptsSpan.textContent = data.count;
+            if (data.count >= MAX_ATTEMPTS - 1) {
+                attemptsSpan.className = 'attempts danger';
+            }
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 3000);
+            showNotification(`❌ رمز الدخول غير صحيح (${data.count}/${MAX_ATTEMPTS})`, 'error');
+        }
+        
+        document.getElementById('adminPassword').value = '';
+    }
+}
+
+function updateLockCountdown() {
+    const remaining = getRemainingLockTime();
+    if (remaining > 0) {
+        document.getElementById('lockCountdown').textContent = formatLockTime(remaining);
+    } else {
+        document.getElementById('loginLocked').classList.remove('show');
+        const data = getAttemptsData();
+        data.count = 0;
+        data.lockUntil = null;
+        saveAttemptsData(data);
+        document.getElementById('attemptsCount').textContent = '0';
+        document.getElementById('attemptsCount').className = 'attempts';
+        if (window.lockInterval) {
+            clearInterval(window.lockInterval);
+            window.lockInterval = null;
+        }
+        showNotification('✅ تم فتح القفل، يمكنك المحاولة مرة أخرى', 'success');
+    }
+}
+
+function updateAttemptsDisplay() {
+    const data = getAttemptsData();
+    const attemptsSpan = document.getElementById('attemptsCount');
+    if (attemptsSpan) {
+        attemptsSpan.textContent = data.count;
+        if (data.count >= MAX_ATTEMPTS - 1) {
+            attemptsSpan.className = 'attempts danger';
+        } else {
+            attemptsSpan.className = 'attempts';
+        }
+    }
+    
+    if (isLocked()) {
+        const remaining = getRemainingLockTime();
+        if (remaining > 0) {
+            document.getElementById('loginLocked').classList.add('show');
+            document.getElementById('lockCountdown').textContent = formatLockTime(remaining);
+            if (!window.lockInterval) {
+                window.lockInterval = setInterval(updateLockCountdown, 1000);
+            }
+        }
+    }
+}
+
+// ===== دوال إدارة الخدمات والأرقام =====
+
 const DEFAULT_PHONES = [
     { id: 'phone1', name: 'ناصر السعود (أبو حمزة)', number: '0797707075' },
     { id: 'phone2', name: 'خالد السعود (أبو هاشم)', number: '0795496966' }
 ];
 
-// تحميل الأرقام من localStorage
 function getPhones() {
     const saved = localStorage.getItem('admin_phones');
     if (saved) {
@@ -473,15 +752,12 @@ function savePhones(phones) {
     localStorage.setItem('admin_phones', JSON.stringify(phones));
 }
 
-// تحميل الخدمات من SERVICES_DATA
 function getServices() {
     return SERVICES_DATA;
 }
 
 function saveServices(services) {
-    // بما أن SERVICES_DATA ثابت، نقوم بتخزين التعديلات في localStorage
     localStorage.setItem('admin_services', JSON.stringify(services));
-    // تحديث SERVICES_DATA
     SERVICES_DATA.length = 0;
     services.forEach(s => SERVICES_DATA.push(s));
 }
@@ -491,7 +767,6 @@ function loadServicesForAdmin() {
     if (!container) return;
     
     let services = SERVICES_DATA;
-    // التحقق من وجود تعديلات في localStorage
     const saved = localStorage.getItem('admin_services');
     if (saved) {
         const parsed = JSON.parse(saved);
@@ -557,21 +832,16 @@ function updatePhone(index) {
     const phones = getPhones();
     phones[index].number = input.value.trim();
     savePhones(phones);
-    
-    // تحديث الأرقام في الموقع
     updateAllPhoneNumbers(phones[0].number, phones[1].number);
     showNotification('✅ تم تحديث الرقم', 'success');
 }
 
 function updateAllPhoneNumbers(phone1, phone2) {
-    // تحديث أرقام الواتساب
     const whatsappItems = document.querySelectorAll('.whatsapp-float .contact-item');
     if (whatsappItems.length >= 2) {
         whatsappItems[0].setAttribute('onclick', `openWhatsApp('${phone1}')`);
         whatsappItems[1].setAttribute('onclick', `openWhatsApp('${phone2}')`);
     }
-    
-    // تحديث أرقام الاتصال
     const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
     if (phoneLinks.length >= 2) {
         phoneLinks[0].href = `tel:${phone1}`;
@@ -580,13 +850,11 @@ function updateAllPhoneNumbers(phone1, phone2) {
 }
 
 function switchAdminTab(tab) {
-    // تحديث الأزرار
     document.querySelectorAll('.admin-tabs button').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector(`.admin-tabs button[onclick="switchAdminTab('${tab}')"]`)?.classList.add('active');
     
-    // تحديث المحتوى
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.add('active');
     
@@ -594,7 +862,6 @@ function switchAdminTab(tab) {
     if (tab === 'phones') loadPhonesForAdmin();
 }
 
-// ===== SERVICE CRUD =====
 function showAddService() {
     document.getElementById('modalTitle').textContent = 'إضافة خدمة جديدة';
     document.getElementById('editServiceIndex').value = '-1';
@@ -658,21 +925,6 @@ function closeModal() {
     document.getElementById('serviceModal').classList.remove('active');
 }
 
-// ===== ADMIN LOGIN =====
-function adminLogin() {
-    const password = document.getElementById('adminPassword').value;
-    if (password === '123456') {
-        localStorage.setItem('admin_logged_in', 'true');
-        document.getElementById('adminLogin').style.display = 'none';
-        document.getElementById('adminPanel').classList.add('active');
-        loadServicesForAdmin();
-        loadPhonesForAdmin();
-        showNotification('✅ مرحباً بك في لوحة الإدارة', 'success');
-    } else {
-        showNotification('❌ رمز الدخول غير صحيح', 'error');
-    }
-}
-
 function adminLogout() {
     localStorage.removeItem('admin_logged_in');
     document.getElementById('adminLogin').style.display = 'block';
@@ -680,8 +932,10 @@ function adminLogout() {
     showNotification('✅ تم تسجيل الخروج', 'info');
 }
 
-// ===== CHECK LOGIN ON LOAD =====
+// ===== التحميل عند فتح الصفحة =====
 document.addEventListener('DOMContentLoaded', function() {
+    updateAttemptsDisplay();
+    
     if (localStorage.getItem('admin_logged_in') === 'true') {
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminPanel').classList.add('active');
@@ -689,7 +943,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadPhonesForAdmin();
     }
     
-    // إغلاق المودال عند النقر خارجها
     document.getElementById('serviceModal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
