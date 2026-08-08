@@ -153,11 +153,8 @@ function addDarkModeButton() {
     document.body.appendChild(btn);
 }
 
-// ===== GOOGLE FORM SUBMISSION (نسخة iframe) =====
-const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/formResponse';
-
-// الحد الأقصى لحجم الملف (5 ميجابايت)
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+// ===== FORMPREE SUBMISSION =====
+const FORMSPREE_URL = 'https://formspree.io/f/xoeajlpe';
 
 // الحد الأقصى للطلبات في اليوم (2)
 const MAX_REQUESTS_PER_DAY = 2;
@@ -183,7 +180,7 @@ function getRemainingRequests() {
     return MAX_REQUESTS_PER_DAY - getRequestCount();
 }
 
-// ===== دالة الإرسال إلى Google Forms (نسخة iframe) =====
+// ===== دالة الإرسال إلى Formspree =====
 function submitToGoogleForm(event) {
     event.preventDefault();
     
@@ -209,10 +206,10 @@ function submitToGoogleForm(event) {
         return;
     }
     
-    // التحقق من حجم الملف
+    // التحقق من حجم الملف (5 ميجابايت كحد أقصى)
     if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        if (file.size > MAX_FILE_SIZE) {
+        if (file.size > 5 * 1024 * 1024) {
             showNotification(`⚠️ حجم الملف كبير جداً (الحد الأقصى 5 ميجابايت). الرجاء اختيار ملف أصغر.`, 'error');
             return;
         }
@@ -224,62 +221,53 @@ function submitToGoogleForm(event) {
     submitBtn.disabled = true;
     loading.style.display = 'block';
     
-    // إنشاء نموذج مخفي وإرساله عبر iframe
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = GOOGLE_FORM_URL;
-    form.target = 'hidden-iframe';
-    form.style.display = 'none';
+    // بناء البيانات للإرسال إلى Formspree
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('phone', phone);
+    formData.append('service', service);
+    formData.append('description', description);
     
-    // أسماء الحقول (تأكد من تطابقها مع Google Forms)
-    const fields = {
-        'entry.123456789': name,
-        'entry.987654321': phone,
-        'entry.111111111': service,
-        'entry.222222222': description
-    };
-    
-    for (const [key, value] of Object.entries(fields)) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+    // إذا كان هناك ملف مرفق، أضفه
+    if (fileInput && fileInput.files.length > 0) {
+        formData.append('attachment', fileInput.files[0]);
     }
     
-    // إضافة iframe مخفي
-    const iframe = document.createElement('iframe');
-    iframe.name = 'hidden-iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-    
-    // إرسال النموذج
-    form.submit();
-    
-    // عرض رسالة نجاح فورية
-    setTimeout(() => {
-        // تسجيل الطلب
-        incrementRequestCount();
-        const remaining = getRemainingRequests();
-        
-        showNotification(`✅ تم استلام طلبك بنجاح! (تبقى ${remaining} طلب اليوم)`, 'success');
-        document.getElementById('requestForm').reset();
-        if (fileInput) {
-            fileInput.value = '';
-            const fileNameEl = document.getElementById('fileName');
-            if (fileNameEl) fileNameEl.textContent = 'اضغط لاختيار ملف';
+    // إرسال البيانات إلى Formspree
+    fetch(FORMSPREE_URL, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
         }
-        
-        // تنظيف العناصر المؤقتة
-        setTimeout(() => {
-            iframe.remove();
-            form.remove();
-        }, 2000);
-        
+    })
+    .then(response => {
+        if (response.ok) {
+            // تسجيل الطلب
+            incrementRequestCount();
+            const remaining = getRemainingRequests();
+            
+            showNotification(`✅ تم استلام طلبك بنجاح! (تبقى ${remaining} طلب اليوم)`, 'success');
+            document.getElementById('requestForm').reset();
+            if (fileInput) {
+                fileInput.value = '';
+                const fileNameEl = document.getElementById('fileName');
+                if (fileNameEl) fileNameEl.textContent = 'اضغط لاختيار ملف';
+            }
+        } else {
+            return response.json().then(data => {
+                throw new Error(data.error || 'حدث خطأ في الإرسال');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification(`❌ ${error.message || 'حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى'}`, 'error');
+    })
+    .finally(() => {
         submitBtn.disabled = false;
         loading.style.display = 'none';
-    }, 2000);
+    });
 }
 
 // ===== LOAD SERVICES FOR SELECT =====
