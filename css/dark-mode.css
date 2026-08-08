@@ -1,0 +1,124 @@
+/* ===== DARK MODE ===== */
+body.dark-mode {
+    background: #1a1a2e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .header {
+    background: rgba(26, 26, 46, 0.95);
+    border-bottom: 1px solid #2d2d44;
+}
+
+body.dark-mode .header .logo-text {
+    color: #e0e0e0;
+}
+
+body.dark-mode .nav a {
+    color: #b0b0b0;
+}
+
+body.dark-mode .nav a:hover,
+body.dark-mode .nav a.active {
+    background: var(--primary);
+    color: white;
+}
+
+body.dark-mode .section {
+    background: #1a1a2e;
+}
+
+body.dark-mode .service-card,
+body.dark-mode .contact-card,
+body.dark-mode .stats,
+body.dark-mode .request-form,
+body.dark-mode .contact-info-section,
+body.dark-mode .map-section,
+body.dark-mode .about-content {
+    background: #16213e;
+    border-color: #2d2d44;
+    color: #e0e0e0;
+}
+
+body.dark-mode .service-card h3,
+body.dark-mode .contact-card .info h4 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .service-card p,
+body.dark-mode .contact-card .info .label {
+    color: #b0b0b0;
+}
+
+body.dark-mode .form-control {
+    background: #2d2d44;
+    border-color: #3d3d5c;
+    color: #e0e0e0;
+}
+
+body.dark-mode .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.2);
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #888;
+}
+
+body.dark-mode .footer {
+    background: #0d0d1a;
+}
+
+body.dark-mode .footer h4 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .footer a {
+    color: #b0b0b0;
+}
+
+body.dark-mode .footer a:hover {
+    color: var(--primary-light);
+}
+
+body.dark-mode .whatsapp-popup {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .whatsapp-popup .contact-item:hover {
+    background: #2d2d44;
+}
+
+body.dark-mode .whatsapp-popup .contact-item .name {
+    color: #e0e0e0;
+}
+
+body.dark-mode .notification.success {
+    background: var(--primary);
+}
+
+body.dark-mode .notification.error {
+    background: #DC3545;
+}
+
+body.dark-mode .notification.info {
+    background: #17A2B8;
+}
+
+body.dark-mode .dark-mode-toggle {
+    background: #2d2d44;
+    color: #FFD700;
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+    background: #3d3d5c;
+}
+
+body.dark-mode .about-content ul li {
+    background: #2d2d44;
+}
+
+body.dark-mode .about-content .highlight {
+    background: #2d2d44;
+    border-right-color: var(--primary-light);
+}

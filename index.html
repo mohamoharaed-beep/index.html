@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز حمزة للخدمات الإلكترونية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="مركز حمزة" onerror="this.src='https://via.placeholder.com/50x50/2E7D32/FFFFFF?text=H'">
+            <span class="logo-text">مركز <span>حمزة</span></span>
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+            <a href="index.html" class="active"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="services.html"><i class="fas fa-concierge-bell"></i> الخدمات</a>
+            <a href="request.html"><i class="fas fa-pen-to-square"></i> طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html"><i class="fas fa-phone"></i> اتصل بنا</a>
+            <a href="admin.html"><i class="fas fa-user-shield"></i> الإدارة</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>
+                <i class="fas fa-star"></i> 
+                مركز حمزة للخدمات الإلكترونية
+                <i class="fas fa-star"></i>
+            </h1>
+            <p>نقدم لك جميع الخدمات الحكومية والإلكترونية بكل احترافية وسرعة. ثقتك تهمنا، ورضاك هدفنا.</p>
+            <div class="hero-buttons">
+                <a href="services.html" class="btn btn-primary">
+                    <i class="fas fa-list"></i> استعرض الخدمات
+                </a>
+                <a href="request.html" class="btn btn-outline">
+                    <i class="fas fa-paper-plane"></i> اطلب خدمة الآن
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== STATS (محدث) ===== -->
+<section class="section">
+    <div class="container">
+        <div class="stats">
+            <div class="stat-item animate-on-scroll">
+                <div class="number" data-count="1000">0</div>
+                <div class="label">معاملة منجزة</div>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <div class="number" data-count="20">0</div>
+                <div class="label">خدمة متنوعة</div>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <div class="number" data-count="500">0</div>
+                <div class="label">عميل راضٍ</div>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <div class="number" data-count="7">0</div>
+                <div class="label">سنوات من الخبرة</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICES PREVIEW ===== -->
+<section class="section" style="background: var(--white);">
+    <div class="container">
+        <div class="section-title">
+            <h2>خدماتنا المميزة</h2>
+            <p>نقدم مجموعة واسعة من الخدمات لتلبية احتياجاتك</p>
+        </div>
+        <div class="services-grid" id="servicesPreview">
+            <!-- يتم تحميل الخدمات عبر JavaScript -->
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="services.html" class="btn btn-success">
+                <i class="fas fa-arrow-left"></i> عرض جميع الخدمات
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="container">
+        <div>
+            <h4>مركز حمزة</h4>
+            <p>خدمات إلكترونية وحكومية بكل احترافية</p>
+            <div style="margin-top: 10px;">
+                <a href="https://www.facebook.com/share/1ERwzyRenu/" target="_blank" style="color: var(--gray-400); font-size: 1.5rem; transition: var(--transition);">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h4>روابط سريعة</h4>
+            <a href="services.html">الخدمات</a>
+            <a href="request.html">طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html">اتصل بنا</a>
+            <a href="admin.html">الإدارة</a>
+        </div>
+        <div>
+            <h4>ساعات العمل</h4>
+            <p>🕐 جميع أيام الأسبوع</p>
+            <p>9:00 ص - 12:00 م</p>
+        </div>
+        <div>
+            <h4>موقعنا</h4>
+            <p><i class="fas fa-location-dot"></i> عمان، جبل التاج، شارع الشهداء</p>
+            <p><i class="fas fa-store"></i> بجانب النور للبصريات</p>
+            <a href="https://www.google.com/maps/place/31%C2%B056'57.1%22N+35%C2%B057'13.8%22E/@31.949187,35.953821,19z" target="_blank" class="btn btn-sm btn-success" style="margin-top: 10px;">
+                <i class="fas fa-map-marked-alt"></i> افتح على خرائط Google
+            </a>
+        </div>
+    </div>
+    <div class="bottom">
+        <p>جميع الحقوق محفوظة &copy; 2026 مركز حمزة للخدمات الإلكترونية</p>
+    </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOATING ===== -->
+<div class="whatsapp-float">
+    <button class="main-btn" onclick="toggleWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+    <div class="whatsapp-popup" id="whatsappPopup">
+        <div class="contact-item" onclick="openWhatsApp('0797707075')">
+            <img src="https://ui-avatars.com/api/?name=ناصر+السعود&background=2E7D32&color=fff" alt="ناصر">
+            <div>
+                <div class="name">ناصر السعود</div>
+                <div class="role">أبو حمزة</div>
+            </div>
+        </div>
+        <div class="contact-item" onclick="openWhatsApp('0795496966')">
+            <img src="https://ui-avatars.com/api/?name=خالد+السعود&background=2E7D32&color=fff" alt="خالد">
+            <div>
+                <div class="name">خالد السعود</div>
+                <div class="role">أبو هاشم</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/services-data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

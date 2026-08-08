@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اتصل بنا - مركز حمزة للخدمات الإلكترونية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <style>
+        .contact-page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        .contact-info-section {
+            background: var(--white);
+            padding: 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: background 0.3s;
+        }
+        .contact-info-section h3 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+        .contact-info-section .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .contact-info-section .info-item:last-child {
+            border-bottom: none;
+        }
+        .contact-info-section .info-item .icon-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .contact-info-section .info-item .text {
+            flex: 1;
+        }
+        .contact-info-section .info-item .text .label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+        .contact-info-section .info-item .text .value {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--gray-900);
+        }
+        .contact-info-section .info-item .text .value.dir-ltr {
+            direction: ltr;
+            display: inline-block;
+        }
+        .map-section {
+            background: var(--white);
+            padding: 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: background 0.3s;
+        }
+        .map-section h3 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+        .map-section iframe {
+            width: 100%;
+            height: 300px;
+            border-radius: var(--radius-sm);
+            border: none;
+        }
+        .map-section .address-details {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+        }
+        .map-section .address-details p {
+            margin: 5px 0;
+            color: var(--gray-700);
+        }
+        .map-section .address-details i {
+            color: var(--primary);
+            width: 25px;
+        }
+        .contact-actions-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-info-section {
+                padding: 20px;
+            }
+            .map-section {
+                padding: 20px;
+            }
+            .map-section iframe {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="مركز حمزة" onerror="this.src='https://via.placeholder.com/50x50/2E7D32/FFFFFF?text=H'">
+            <span class="logo-text">مركز <span>حمزة</span></span>
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+            <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="services.html"><i class="fas fa-concierge-bell"></i> الخدمات</a>
+            <a href="request.html"><i class="fas fa-pen-to-square"></i> طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html" class="active"><i class="fas fa-phone"></i> اتصل بنا</a>
+            <a href="admin.html"><i class="fas fa-user-shield"></i> الإدارة</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== CONTACT SECTION ===== -->
+<section class="section" style="padding-top: 40px;">
+    <div class="container contact-page">
+        <div class="section-title">
+            <h2><i class="fas fa-phone" style="color:var(--primary);"></i> اتصل بنا</h2>
+            <p>نحن هنا لخدمتك، تواصل معنا عبر أي من القنوات التالية</p>
+        </div>
+        
+        <div class="contact-grid">
+            <!-- معلومات التواصل -->
+            <div class="contact-info-section">
+                <h3><i class="fas fa-address-card" style="color:var(--primary);"></i> معلومات التواصل</h3>
+                
+                <!-- الشخص الأول -->
+                <div class="info-item">
+                    <div class="icon-circle"><i class="fas fa-user-tie"></i></div>
+                    <div class="text">
+                        <div class="label">ناصر السعود</div>
+                        <div class="value">أبو حمزة</div>
+                        <div class="value dir-ltr" style="color:var(--primary);">0797707075</div>
+                        <div class="contact-actions-grid">
+                            <a href="tel:0797707075" class="btn btn-success btn-sm"><i class="fas fa-phone"></i> اتصال</a>
+                            <button onclick="copyNumber('0797707075')" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy"></i> نسخ</button>
+                            <button onclick="openWhatsApp('0797707075')" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> واتساب</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- الشخص الثاني -->
+                <div class="info-item">
+                    <div class="icon-circle"><i class="fas fa-user-tie"></i></div>
+                    <div class="text">
+                        <div class="label">خالد السعود</div>
+                        <div class="value">أبو هاشم</div>
+                        <div class="value dir-ltr" style="color:var(--primary);">0795496966</div>
+                        <div class="contact-actions-grid">
+                            <a href="tel:0795496966" class="btn btn-success btn-sm"><i class="fas fa-phone"></i> اتصال</a>
+                            <button onclick="copyNumber('0795496966')" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy"></i> نسخ</button>
+                            <button onclick="openWhatsApp('0795496966')" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> واتساب</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ساعات العمل (محدثة) -->
+                <div class="info-item" style="border-bottom: none; margin-top: 10px; background: var(--primary-bg); border-radius: var(--radius-sm); padding: 15px;">
+                    <div class="icon-circle" style="background:var(--primary);color:white;"><i class="fas fa-clock"></i></div>
+                    <div class="text">
+                        <div class="label">ساعات العمل</div>
+                        <div class="value" style="font-size:0.95rem;">
+                            <div>🟢 جميع أيام الأسبوع: 9:00 ص - 12:00 م</div>
+                            <div style="font-size:0.8rem;color:var(--gray-500);margin-top:5px;">
+                                <i class="fas fa-star" style="color:#FFD700;"></i> نخدمكم طوال أيام الأسبوع
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- الموقع -->
+            <div class="map-section">
+                <h3><i class="fas fa-location-dot" style="color:var(--primary);"></i> موقعنا</h3>
+                
+                <!-- خريطة Google -->
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d268.4061303089662!2d35.953821!3d31.949187!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sar!2sjo!4v1743859200000" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+                
+                <div class="address-details">
+                    <p><i class="fas fa-map-pin"></i> <strong>العنوان:</strong></p>
+                    <p><i class="fas fa-city"></i> عمان - جبل التاج</p>
+                    <p><i class="fas fa-road"></i> شارع الشهداء</p>
+                    <p><i class="fas fa-store"></i> بجانب النور للبصريات</p>
+                    <p style="color:var(--primary);font-weight:600;margin-top:5px;">
+                        <i class="fas fa-location-arrow"></i> الإحداثيات: 31.949187, 35.953821
+                    </p>
+                    <a href="https://www.google.com/maps/place/31%C2%B056'57.1%22N+35%C2%B057'13.8%22E/@31.949187,35.953821,19z" target="_blank" class="btn btn-success" style="margin-top: 10px; width:100%; justify-content:center;">
+                        <i class="fas fa-map-marked-alt"></i> افتح الموقع على خرائط Google
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="container">
+        <div>
+            <h4>مركز حمزة</h4>
+            <p>خدمات إلكترونية وحكومية بكل احترافية</p>
+            <div style="margin-top: 10px;">
+                <a href="https://www.facebook.com/share/1ERwzyRenu/" target="_blank" style="color: var(--gray-400); font-size: 1.5rem; transition: var(--transition);">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h4>روابط سريعة</h4>
+            <a href="services.html">الخدمات</a>
+            <a href="request.html">طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html">اتصل بنا</a>
+            <a href="admin.html">الإدارة</a>
+        </div>
+        <div>
+            <h4>ساعات العمل</h4>
+            <p>🕐 جميع أيام الأسبوع</p>
+            <p>9:00 ص - 12:00 م</p>
+        </div>
+        <div>
+            <h4>موقعنا</h4>
+            <p><i class="fas fa-location-dot"></i> عمان، جبل التاج، شارع الشهداء</p>
+            <p><i class="fas fa-store"></i> بجانب النور للبصريات</p>
+            <a href="https://www.google.com/maps/place/31%C2%B056'57.1%22N+35%C2%B057'13.8%22E/@31.949187,35.953821,19z" target="_blank" class="btn btn-sm btn-success" style="margin-top: 10px;">
+                <i class="fas fa-map-marked-alt"></i> افتح على خرائط Google
+            </a>
+        </div>
+    </div>
+    <div class="bottom">
+        <p>جميع الحقوق محفوظة &copy; 2026 مركز حمزة للخدمات الإلكترونية</p>
+    </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOATING ===== -->
+<div class="whatsapp-float">
+    <button class="main-btn" onclick="toggleWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+    <div class="whatsapp-popup" id="whatsappPopup">
+        <div class="contact-item" onclick="openWhatsApp('0797707075')">
+            <img src="https://ui-avatars.com/api/?name=ناصر+السعود&background=2E7D32&color=fff" alt="ناصر">
+            <div>
+                <div class="name">ناصر السعود</div>
+                <div class="role">أبو حمزة</div>
+            </div>
+        </div>
+        <div class="contact-item" onclick="openWhatsApp('0795496966')">
+            <img src="https://ui-avatars.com/api/?name=خالد+السعود&background=2E7D32&color=fff" alt="خالد">
+            <div>
+                <div class="name">خالد السعود</div>
+                <div class="role">أبو هاشم</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/services-data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

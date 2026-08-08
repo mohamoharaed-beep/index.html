@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب خدمة - مركز حمزة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <style>
+        .request-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: background 0.3s;
+        }
+        .request-form .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .request-form .form-title h2 {
+            color: var(--primary-dark);
+        }
+        .request-form .form-title p {
+            color: var(--gray-600);
+        }
+        .request-form .btn-submit {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .required-star {
+            color: #DC3545;
+            margin-right: 4px;
+        }
+        .file-upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--gray-50);
+        }
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+        .file-upload-area i {
+            font-size: 2rem;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .file-upload-area .file-name {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+        .file-upload-area .file-size-limit {
+            color: var(--gray-500);
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        #fileAttachment {
+            display: none;
+        }
+        .request-limit-info {
+            background: var(--primary-bg);
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            margin-bottom: 20px;
+        }
+        .request-limit-info i {
+            color: var(--primary);
+        }
+        .request-limit-info .remaining {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="مركز حمزة" onerror="this.src='https://via.placeholder.com/50x50/2E7D32/FFFFFF?text=H'">
+            <span class="logo-text">مركز <span>حمزة</span></span>
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+            <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="services.html"><i class="fas fa-concierge-bell"></i> الخدمات</a>
+            <a href="request.html" class="active"><i class="fas fa-pen-to-square"></i> طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html"><i class="fas fa-phone"></i> اتصل بنا</a>
+            <a href="admin.html"><i class="fas fa-user-shield"></i> الإدارة</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== REQUEST SECTION ===== -->
+<section class="section">
+    <div class="container">
+        <div class="request-form">
+            <div class="form-title">
+                <h2><i class="fas fa-pen-to-square" style="color: var(--primary);"></i> طلب خدمة</h2>
+                <p>املأ البيانات وسنقوم بالتواصل معك في أقرب وقت</p>
+            </div>
+            
+            <div class="request-limit-info" id="requestLimitInfo">
+                <i class="fas fa-info-circle"></i> 
+                يمكنك إرسال <strong>طلبان</strong> فقط في اليوم الواحد.
+                <span class="remaining" id="remainingRequests">تبقى لك 2 طلب اليوم</span>
+            </div>
+            
+            <form id="requestForm" onsubmit="submitToGoogleForm(event)">
+                <div class="form-group">
+                    <label for="customerName">
+                        <i class="fas fa-user"></i> الاسم الكامل
+                        <span class="required-star">*</span>
+                    </label>
+                    <input type="text" id="customerName" class="form-control" placeholder="أدخل اسمك الكامل" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customerPhone">
+                        <i class="fas fa-phone"></i> رقم الهاتف
+                        <span class="required-star">*</span>
+                    </label>
+                    <input type="tel" id="customerPhone" class="form-control" placeholder="079XXXXXXXX" required pattern="[0-9]{10}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="serviceSelect">
+                        <i class="fas fa-list"></i> اختيار الخدمة
+                        <span class="required-star">*</span>
+                    </label>
+                    <select id="serviceSelect" class="form-control" required>
+                        <option value="">-- اختر الخدمة --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="requestDescription">
+                        <i class="fas fa-align-left"></i> وصف الطلب
+                        <span class="required-star">*</span>
+                    </label>
+                    <textarea id="requestDescription" class="form-control" placeholder="اكتب تفاصيل طلبك هنا..." required></textarea>
+                </div>
+                
+                <!-- ===== رفع الملفات ===== -->
+                <div class="form-group">
+                    <label for="fileAttachment">
+                        <i class="fas fa-paperclip"></i> إرفاق مستند (اختياري)
+                    </label>
+                    <div class="file-upload-area" onclick="document.getElementById('fileAttachment').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <div class="file-name" id="fileName">اضغط لاختيار ملف</div>
+                        <div class="file-size-limit">الحد الأقصى: 5 ميجابايت (PDF, Word, Excel, صورة)</div>
+                    </div>
+                    <input type="file" id="fileAttachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif">
+                </div>
+                
+                <div class="loading-spinner" id="loadingSpinner">
+                    <i class="fas fa-spinner"></i>
+                    <p>جاري إرسال الطلب...</p>
+                </div>
+                
+                <button type="submit" class="btn btn-success btn-submit" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> إرسال الطلب
+                </button>
+                
+                <p style="text-align:center;margin-top:15px;font-size:0.8rem;color:var(--gray-500);">
+                    <i class="fas fa-shield-alt"></i> بياناتك آمنة ومحمية
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="container">
+        <div>
+            <h4>مركز حمزة</h4>
+            <p>خدمات إلكترونية وحكومية بكل احترافية</p>
+            <div style="margin-top: 10px;">
+                <a href="https://www.facebook.com/share/1ERwzyRenu/" target="_blank" style="color: var(--gray-400); font-size: 1.5rem; transition: var(--transition);">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h4>روابط سريعة</h4>
+            <a href="services.html">الخدمات</a>
+            <a href="request.html">طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html">اتصل بنا</a>
+            <a href="admin.html">الإدارة</a>
+        </div>
+        <div>
+            <h4>ساعات العمل</h4>
+            <p>🕐 جميع أيام الأسبوع</p>
+            <p>9:00 ص - 12:00 م</p>
+        </div>
+        <div>
+            <h4>موقعنا</h4>
+            <p><i class="fas fa-location-dot"></i> عمان، جبل التاج، شارع الشهداء</p>
+            <p><i class="fas fa-store"></i> بجانب النور للبصريات</p>
+            <a href="https://www.google.com/maps/place/31%C2%B056'57.1%22N+35%C2%B057'13.8%22E/@31.949187,35.953821,19z" target="_blank" class="btn btn-sm btn-success" style="margin-top: 10px;">
+                <i class="fas fa-map-marked-alt"></i> افتح على خرائط Google
+            </a>
+        </div>
+    </div>
+    <div class="bottom">
+        <p>جميع الحقوق محفوظة &copy; 2026 مركز حمزة للخدمات الإلكترونية</p>
+    </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOATING ===== -->
+<div class="whatsapp-float">
+    <button class="main-btn" onclick="toggleWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+    <div class="whatsapp-popup" id="whatsappPopup">
+        <div class="contact-item" onclick="openWhatsApp('0797707075')">
+            <img src="https://ui-avatars.com/api/?name=ناصر+السعود&background=2E7D32&color=fff" alt="ناصر">
+            <div>
+                <div class="name">ناصر السعود</div>
+                <div class="role">أبو حمزة</div>
+            </div>
+        </div>
+        <div class="contact-item" onclick="openWhatsApp('0795496966')">
+            <img src="https://ui-avatars.com/api/?name=خالد+السعود&background=2E7D32&color=fff" alt="خالد">
+            <div>
+                <div class="name">خالد السعود</div>
+                <div class="role">أبو هاشم</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/services-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+function updateRemainingRequests() {
+    const remaining = getRemainingRequests();
+    const el = document.getElementById('remainingRequests');
+    if (el) {
+        el.textContent = `تبقى لك ${remaining} طلب اليوم`;
+        if (remaining <= 0) {
+            el.style.color = '#DC3545';
+        } else {
+            el.style.color = 'var(--primary-dark)';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileAttachment');
+    const fileName = document.getElementById('fileName');
+    
+    if (fileInput && fileName) {
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+                if (this.files[0].size > 5 * 1024 * 1024) {
+                    showNotification('⚠️ حجم الملف كبير جداً (الحد الأقصى 5 ميجابايت)', 'error');
+                    this.value = '';
+                    fileName.textContent = 'اضغط لاختيار ملف';
+                }
+            } else {
+                fileName.textContent = 'اضغط لاختيار ملف';
+            }
+        });
+    }
+    
+    updateRemainingRequests();
+});
+</script>
+</body>
+</html>

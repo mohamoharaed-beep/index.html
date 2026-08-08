@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - مركز حمزة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-login {
+            max-width: 400px;
+            margin: 100px auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .admin-login h2 {
+            text-align: center;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+        .admin-panel {
+            display: none;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .admin-tabs button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--gray-200);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .admin-tabs button.active {
+            background: var(--primary);
+            color: white;
+        }
+        .admin-tabs button:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+        .admin-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .admin-content .tab-panel {
+            display: none;
+        }
+        .admin-content .tab-panel.active {
+            display: block;
+        }
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .service-item:hover {
+            background: var(--gray-50);
+        }
+        .service-item .service-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .service-item .service-info i {
+            color: var(--primary);
+            width: 25px;
+        }
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .admin-actions .btn {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+        }
+        .btn-edit {
+            background: #FFC107;
+            color: #212121;
+        }
+        .btn-edit:hover {
+            background: #FFB300;
+        }
+        .btn-delete {
+            background: #DC3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #C82333;
+        }
+        .btn-add {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-add:hover {
+            background: var(--primary-dark);
+        }
+        .admin-phone-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .admin-phone-item .phone-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .admin-phone-item .phone-info i {
+            color: var(--primary);
+            width: 25px;
+        }
+        .admin-phone-item input {
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 1rem;
+            direction: ltr;
+            font-family: inherit;
+        }
+        .admin-phone-item input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .admin-form-group {
+            margin-bottom: 20px;
+        }
+        .admin-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .admin-form-group input,
+        .admin-form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .admin-form-group input:focus,
+        .admin-form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--white);
+            padding: 35px;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--gray-500);
+            transition: var(--transition);
+        }
+        .modal-close:hover {
+            color: var(--gray-900);
+        }
+        .google-forms-link {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--primary-bg);
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+        .google-forms-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .google-forms-link a:hover {
+            text-decoration: underline;
+        }
+        .warning {
+            background: #FFF3CD;
+            color: #856404;
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 15px;
+        }
+        @media (max-width: 768px) {
+            .admin-tabs {
+                flex-direction: column;
+            }
+            .admin-tabs button {
+                width: 100%;
+                text-align: center;
+            }
+            .service-item {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .service-item .service-info {
+                justify-content: center;
+            }
+            .admin-actions {
+                justify-content: center;
+            }
+            .admin-phone-item {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .admin-phone-item input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="مركز حمزة" onerror="this.src='https://via.placeholder.com/50x50/2E7D32/FFFFFF?text=H'">
+            <span class="logo-text">مركز <span>حمزة</span></span>
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+            <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="services.html"><i class="fas fa-concierge-bell"></i> الخدمات</a>
+            <a href="request.html"><i class="fas fa-pen-to-square"></i> طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html"><i class="fas fa-phone"></i> اتصل بنا</a>
+            <a href="admin.html" class="active"><i class="fas fa-user-shield"></i> الإدارة</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== ADMIN SECTION ===== -->
+<section class="section" style="padding-top: 40px;">
+    <div class="container admin-container">
+        
+        <!-- ===== ADMIN LOGIN ===== -->
+        <div class="admin-login" id="adminLogin">
+            <h2><i class="fas fa-user-shield" style="color:var(--primary);"></i> لوحة الإدارة</h2>
+            <p style="text-align:center;color:var(--gray-600);margin-bottom:20px;">أدخل رمز الدخول</p>
+            <div class="form-group">
+                <input type="password" id="adminPassword" class="form-control" placeholder="أدخل رمز الدخول" onkeyup="if(event.key==='Enter') adminLogin()">
+            </div>
+            <button onclick="adminLogin()" class="btn btn-success" style="width:100%;">
+                <i class="fas fa-sign-in-alt"></i> دخول
+            </button>
+            <p style="text-align:center;margin-top:10px;font-size:0.8rem;color:var(--gray-500);">
+                الرمز الافتراضي: 123456
+            </p>
+        </div>
+        
+        <!-- ===== ADMIN PANEL ===== -->
+        <div class="admin-panel" id="adminPanel">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                <h2 style="color:var(--primary-dark);"><i class="fas fa-user-shield" style="color:var(--primary);"></i> لوحة الإدارة</h2>
+                <button onclick="adminLogout()" class="btn btn-danger btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="admin-tabs">
+                <button class="active" onclick="switchAdminTab('services')"><i class="fas fa-list"></i> الخدمات</button>
+                <button onclick="switchAdminTab('phones')"><i class="fas fa-phone"></i> أرقام التواصل</button>
+                <button onclick="switchAdminTab('orders')"><i class="fas fa-inbox"></i> الطلبات</button>
+            </div>
+            
+            <div class="admin-content">
+                <!-- Tab: Services -->
+                <div class="tab-panel active" id="tab-services">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                        <h3>إدارة الخدمات</h3>
+                        <button onclick="showAddService()" class="btn btn-add btn-sm">
+                            <i class="fas fa-plus"></i> إضافة خدمة
+                        </button>
+                    </div>
+                    <div id="servicesList">
+                        <!-- يتم تحميل الخدمات عبر JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Tab: Phones -->
+                <div class="tab-panel" id="tab-phones">
+                    <h3>أرقام التواصل</h3>
+                    <div id="phonesList">
+                        <!-- يتم تحميل الأرقام عبر JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- ===== TAB: ORDERS ===== -->
+<div class="tab-panel" id="tab-orders">
+    <h3>📋 الطلبات</h3>
+    <div class="warning">
+        <i class="fas fa-info-circle"></i> 
+        يتم تخزين الطلبات في Google Forms. يمكنك عرضها وإدارتها من خلال الرابط أدناه.
+    </div>
+    <div class="google-forms-link">
+        <i class="fab fa-google" style="font-size:1.5rem;color:#EA4335;"></i>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/viewform?usp=sharing" target="_blank" style="font-size:1.1rem;">
+            📊 فتح طلبات Google Forms
+        </a>
+    </div>
+    <div style="margin-top:20px;padding:15px;background:var(--primary-bg);border-radius:var(--radius-sm);">
+        <p style="color:var(--gray-700);">
+            <i class="fas fa-link" style="color:var(--primary);"></i> 
+            <strong>رابط الطلبات المباشر:</strong><br>
+            <span style="font-size:0.85rem;word-break:break-all;direction:ltr;display:inline-block;">
+                https://docs.google.com/forms/d/e/1FAIpQLSfZoNUK8yJPQd0gDJiCAWYAwqyKDH5wJru6UZmAI9tTfFCAfw/viewform?usp=sharing
+            </span>
+        </p>
+    </div>
+</div>
+</section>
+
+<!-- ===== MODAL: إضافة/تعديل خدمة ===== -->
+<div class="modal" id="serviceModal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle">إضافة خدمة جديدة</h3>
+        <form id="serviceForm" onsubmit="saveService(event)">
+            <input type="hidden" id="editServiceIndex" value="-1">
+            <div class="admin-form-group">
+                <label>اسم الخدمة</label>
+                <input type="text" id="serviceName" placeholder="أدخل اسم الخدمة" required>
+            </div>
+            <div class="admin-form-group">
+                <label>الأيقونة (اختياري)</label>
+                <input type="text" id="serviceIcon" placeholder="fa-building" value="fa-file-alt">
+            </div>
+            <div class="admin-form-group">
+                <label>الوصف</label>
+                <textarea id="serviceDesc" rows="2" placeholder="وصف الخدمة"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success" style="width:100%;">حفظ</button>
+        </form>
+    </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" style="margin-top:40px;">
+    <div class="container">
+        <div>
+            <h4>مركز حمزة</h4>
+            <p>خدمات إلكترونية وحكومية بكل احترافية</p>
+            <div style="margin-top: 10px;">
+                <a href="https://www.facebook.com/share/1ERwzyRenu/" target="_blank" style="color: var(--gray-400); font-size: 1.5rem; transition: var(--transition);">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h4>روابط سريعة</h4>
+            <a href="services.html">الخدمات</a>
+            <a href="request.html">طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html">اتصل بنا</a>
+            <a href="admin.html">الإدارة</a>
+        </div>
+        <div>
+            <h4>ساعات العمل</h4>
+            <p>🕐 جميع أيام الأسبوع</p>
+            <p>9:00 ص - 12:00 م</p>
+        </div>
+        <div>
+            <h4>موقعنا</h4>
+            <p><i class="fas fa-location-dot"></i> عمان، جبل التاج، شارع الشهداء</p>
+            <p><i class="fas fa-store"></i> بجانب النور للبصريات</p>
+            <a href="https://www.google.com/maps/place/31%C2%B056'57.1%22N+35%C2%B057'13.8%22E/@31.949187,35.953821,19z" target="_blank" class="btn btn-sm btn-success" style="margin-top: 10px;">
+                <i class="fas fa-map-marked-alt"></i> افتح على خرائط Google
+            </a>
+        </div>
+    </div>
+    <div class="bottom">
+        <p>جميع الحقوق محفوظة &copy; 2026 مركز حمزة للخدمات الإلكترونية</p>
+    </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOATING ===== -->
+<div class="whatsapp-float">
+    <button class="main-btn" onclick="toggleWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+    <div class="whatsapp-popup" id="whatsappPopup">
+        <div class="contact-item" onclick="openWhatsApp('0797707075')">
+            <img src="https://ui-avatars.com/api/?name=ناصر+السعود&background=2E7D32&color=fff" alt="ناصر">
+            <div>
+                <div class="name">ناصر السعود</div>
+                <div class="role">أبو حمزة</div>
+            </div>
+        </div>
+        <div class="contact-item" onclick="openWhatsApp('0795496966')">
+            <img src="https://ui-avatars.com/api/?name=خالد+السعود&background=2E7D32&color=fff" alt="خالد">
+            <div>
+                <div class="name">خالد السعود</div>
+                <div class="role">أبو هاشم</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/services-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ===== ADMIN SCRIPTS =====
+
+// بيانات الأرقام الافتراضية (تخزن في localStorage)
+const DEFAULT_PHONES = [
+    { id: 'phone1', name: 'ناصر السعود (أبو حمزة)', number: '0797707075' },
+    { id: 'phone2', name: 'خالد السعود (أبو هاشم)', number: '0795496966' }
+];
+
+// تحميل الأرقام من localStorage
+function getPhones() {
+    const saved = localStorage.getItem('admin_phones');
+    if (saved) {
+        return JSON.parse(saved);
+    }
+    localStorage.setItem('admin_phones', JSON.stringify(DEFAULT_PHONES));
+    return DEFAULT_PHONES;
+}
+
+function savePhones(phones) {
+    localStorage.setItem('admin_phones', JSON.stringify(phones));
+}
+
+// تحميل الخدمات من SERVICES_DATA
+function getServices() {
+    return SERVICES_DATA;
+}
+
+function saveServices(services) {
+    // بما أن SERVICES_DATA ثابت، نقوم بتخزين التعديلات في localStorage
+    localStorage.setItem('admin_services', JSON.stringify(services));
+    // تحديث SERVICES_DATA
+    SERVICES_DATA.length = 0;
+    services.forEach(s => SERVICES_DATA.push(s));
+}
+
+function loadServicesForAdmin() {
+    const container = document.getElementById('servicesList');
+    if (!container) return;
+    
+    let services = SERVICES_DATA;
+    // التحقق من وجود تعديلات في localStorage
+    const saved = localStorage.getItem('admin_services');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.length > 0) {
+            services = parsed;
+            SERVICES_DATA.length = 0;
+            parsed.forEach(s => SERVICES_DATA.push(s));
+        }
+    }
+    
+    if (!services || services.length === 0) {
+        container.innerHTML = '<p style="color:var(--gray-500);">لا توجد خدمات</p>';
+        return;
+    }
+    
+    container.innerHTML = services.map((service, index) => `
+        <div class="service-item">
+            <div class="service-info">
+                <i class="fas ${service.icon || 'fa-file-alt'}"></i>
+                <div>
+                    <strong>${service.name}</strong>
+                    <span style="color:var(--gray-500);font-size:0.9rem;margin-right:10px;">${service.description || ''}</span>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <button onclick="editService(${index})" class="btn btn-edit btn-sm">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteService(${index})" class="btn btn-delete btn-sm">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadPhonesForAdmin() {
+    const container = document.getElementById('phonesList');
+    if (!container) return;
+    
+    const phones = getPhones();
+    
+    container.innerHTML = phones.map((phone, index) => `
+        <div class="admin-phone-item">
+            <div class="phone-info">
+                <i class="fas fa-user"></i>
+                <div>
+                    <strong>${phone.name}</strong>
+                    <input type="text" id="phoneInput_${index}" value="${phone.number}" class="form-control" style="width:150px;display:inline-block;margin-right:10px;" dir="ltr">
+                </div>
+            </div>
+            <button onclick="updatePhone(${index})" class="btn btn-success btn-sm">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+    `).join('');
+}
+
+function updatePhone(index) {
+    const input = document.getElementById(`phoneInput_${index}`);
+    if (!input) return;
+    
+    const phones = getPhones();
+    phones[index].number = input.value.trim();
+    savePhones(phones);
+    
+    // تحديث الأرقام في الموقع
+    updateAllPhoneNumbers(phones[0].number, phones[1].number);
+    showNotification('✅ تم تحديث الرقم', 'success');
+}
+
+function updateAllPhoneNumbers(phone1, phone2) {
+    // تحديث أرقام الواتساب
+    const whatsappItems = document.querySelectorAll('.whatsapp-float .contact-item');
+    if (whatsappItems.length >= 2) {
+        whatsappItems[0].setAttribute('onclick', `openWhatsApp('${phone1}')`);
+        whatsappItems[1].setAttribute('onclick', `openWhatsApp('${phone2}')`);
+    }
+    
+    // تحديث أرقام الاتصال
+    const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+    if (phoneLinks.length >= 2) {
+        phoneLinks[0].href = `tel:${phone1}`;
+        phoneLinks[1].href = `tel:${phone2}`;
+    }
+}
+
+function switchAdminTab(tab) {
+    // تحديث الأزرار
+    document.querySelectorAll('.admin-tabs button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`.admin-tabs button[onclick="switchAdminTab('${tab}')"]`)?.classList.add('active');
+    
+    // تحديث المحتوى
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    
+    if (tab === 'services') loadServicesForAdmin();
+    if (tab === 'phones') loadPhonesForAdmin();
+}
+
+// ===== SERVICE CRUD =====
+function showAddService() {
+    document.getElementById('modalTitle').textContent = 'إضافة خدمة جديدة';
+    document.getElementById('editServiceIndex').value = '-1';
+    document.getElementById('serviceName').value = '';
+    document.getElementById('serviceIcon').value = 'fa-file-alt';
+    document.getElementById('serviceDesc').value = '';
+    document.getElementById('serviceModal').classList.add('active');
+}
+
+function editService(index) {
+    const services = getServices();
+    const service = services[index];
+    if (!service) return;
+    
+    document.getElementById('modalTitle').textContent = 'تعديل الخدمة';
+    document.getElementById('editServiceIndex').value = index;
+    document.getElementById('serviceName').value = service.name;
+    document.getElementById('serviceIcon').value = service.icon || 'fa-file-alt';
+    document.getElementById('serviceDesc').value = service.description || '';
+    document.getElementById('serviceModal').classList.add('active');
+}
+
+function deleteService(index) {
+    if (!confirm('هل أنت متأكد من حذف هذه الخدمة؟')) return;
+    
+    const services = getServices();
+    services.splice(index, 1);
+    saveServices(services);
+    loadServicesForAdmin();
+    showNotification('✅ تم حذف الخدمة', 'success');
+}
+
+function saveService(event) {
+    event.preventDefault();
+    
+    const index = parseInt(document.getElementById('editServiceIndex').value);
+    const name = document.getElementById('serviceName').value.trim();
+    const icon = document.getElementById('serviceIcon').value.trim() || 'fa-file-alt';
+    const description = document.getElementById('serviceDesc').value.trim();
+    
+    if (!name) {
+        showNotification('❌ يرجى إدخال اسم الخدمة', 'error');
+        return;
+    }
+    
+    const services = getServices();
+    
+    if (index === -1) {
+        services.push({ name, icon, description });
+    } else {
+        services[index] = { name, icon, description };
+    }
+    
+    saveServices(services);
+    closeModal();
+    loadServicesForAdmin();
+    showNotification('✅ تم حفظ الخدمة', 'success');
+}
+
+function closeModal() {
+    document.getElementById('serviceModal').classList.remove('active');
+}
+
+// ===== ADMIN LOGIN =====
+function adminLogin() {
+    const password = document.getElementById('adminPassword').value;
+    if (password === '123456') {
+        localStorage.setItem('admin_logged_in', 'true');
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminPanel').classList.add('active');
+        loadServicesForAdmin();
+        loadPhonesForAdmin();
+        showNotification('✅ مرحباً بك في لوحة الإدارة', 'success');
+    } else {
+        showNotification('❌ رمز الدخول غير صحيح', 'error');
+    }
+}
+
+function adminLogout() {
+    localStorage.removeItem('admin_logged_in');
+    document.getElementById('adminLogin').style.display = 'block';
+    document.getElementById('adminPanel').classList.remove('active');
+    showNotification('✅ تم تسجيل الخروج', 'info');
+}
+
+// ===== CHECK LOGIN ON LOAD =====
+document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('admin_logged_in') === 'true') {
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminPanel').classList.add('active');
+        loadServicesForAdmin();
+        loadPhonesForAdmin();
+    }
+    
+    // إغلاق المودال عند النقر خارجها
+    document.getElementById('serviceModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+});
+</script>
+</body>
+</html>
