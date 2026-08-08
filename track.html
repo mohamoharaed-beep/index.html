@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع الطلب - مركز حمزة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <style>
+        .track-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .track-form {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: background 0.3s;
+        }
+        .track-form .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .track-form .form-title h2 {
+            color: var(--primary-dark);
+        }
+        .track-form .form-title p {
+            color: var(--gray-600);
+        }
+        .track-result {
+            margin-top: 25px;
+        }
+        .track-result .empty {
+            text-align: center;
+            color: var(--gray-500);
+            padding: 30px;
+        }
+        .track-result .empty i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+            color: var(--gray-400);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="مركز حمزة" onerror="this.src='https://via.placeholder.com/50x50/2E7D32/FFFFFF?text=H'">
+            <span class="logo-text">مركز <span>حمزة</span></span>
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav class="nav" id="mainNav">
+            <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="services.html"><i class="fas fa-concierge-bell"></i> الخدمات</a>
+            <a href="request.html"><i class="fas fa-pen-to-square"></i> طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html"><i class="fas fa-phone"></i> اتصل بنا</a>
+            <a href="track.html" class="active"><i class="fas fa-search"></i> تتبع الطلب</a>
+            <a href="admin.html"><i class="fas fa-user-shield"></i> الإدارة</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== TRACK SECTION ===== -->
+<section class="section" style="padding-top: 40px;">
+    <div class="container">
+        <div class="track-container">
+            <div class="track-form">
+                <div class="form-title">
+                    <h2><i class="fas fa-search" style="color:var(--primary);"></i> تتبع طلبك</h2>
+                    <p>أدخل رقم المعاملة الخاص بك لعرض تفاصيل الطلب</p>
+                </div>
+                
+                <form id="trackForm" onsubmit="trackOrder(event)">
+                    <div class="form-group">
+                        <label for="trackOrderId">
+                            <i class="fas fa-hashtag"></i> رقم المعاملة
+                        </label>
+                        <input type="text" id="trackOrderId" class="form-control" placeholder="مثال: HZ-0001" required>
+                        <p style="font-size:0.8rem;color:var(--gray-500);margin-top:5px;">
+                            <i class="fas fa-info-circle"></i> أدخل الرقم الذي حصلت عليه بعد إرسال الطلب
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width:100%;">
+                        <i class="fas fa-search"></i> بحث
+                    </button>
+                </form>
+                
+                <div class="track-result" id="trackResult">
+                    <div class="empty">
+                        <i class="fas fa-box-open"></i>
+                        <p>أدخل رقم المعاملة لعرض التفاصيل</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="container">
+        <div>
+            <h4>مركز حمزة</h4>
+            <p>خدمات إلكترونية وحكومية بكل احترافية</p>
+            <div style="margin-top: 10px;">
+                <a href="https://www.facebook.com/share/1ERwzyRenu/" target="_blank" style="color: var(--gray-400); font-size: 1.5rem; transition: var(--transition);">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <h4>روابط سريعة</h4>
+            <a href="services.html">الخدمات</a>
+            <a href="request.html">طلب خدمة</a>
+            <a href="about.html">من نحن</a>
+            <a href="contact.html">اتصل بنا</a>
+            <a href="track.html">تتبع الطلب</a>
+            <a href="admin.html">الإدارة</a>
+        </div>
+        <div>
+            <h4>ساعات العمل</h4>
+            <p>🕐 جميع أيام الأسبوع</p>
+            <p>9:00 ص - 12:00 م</p>
+        </div>
+        <div>
+            <h4>موقعنا</h4>
+            <p><i class="fas fa-location-dot"></i> عمان، جبل التاج، شارع الشهداء</p>
+            <p><i class="fas fa-store"></i> بجانب النور للبصريات</p>
+            <a href="https://www.google.com/maps/place/31%C2%B056'57.1%22N+35%C2%B057'13.8%22E/@31.949187,35.953821,19z" target="_blank" class="btn btn-sm btn-success" style="margin-top: 10px;">
+                <i class="fas fa-map-marked-alt"></i> افتح على خرائط Google
+            </a>
+        </div>
+    </div>
+    <div class="bottom">
+        <p>جميع الحقوق محفوظة &copy; 2026 مركز حمزة للخدمات الإلكترونية</p>
+    </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOATING ===== -->
+<div class="whatsapp-float">
+    <button class="main-btn" onclick="toggleWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+    <div class="whatsapp-popup" id="whatsappPopup">
+        <div class="contact-item" onclick="openWhatsApp('0797707075')">
+            <img src="https://ui-avatars.com/api/?name=ناصر+السعود&background=2E7D32&color=fff" alt="ناصر">
+            <div>
+                <div class="name">ناصر السعود</div>
+                <div class="role">أبو حمزة</div>
+            </div>
+        </div>
+        <div class="contact-item" onclick="openWhatsApp('0795496966')">
+            <img src="https://ui-avatars.com/api/?name=خالد+السعود&background=2E7D32&color=fff" alt="خالد">
+            <div>
+                <div class="name">خالد السعود</div>
+                <div class="role">أبو هاشم</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/services-data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
